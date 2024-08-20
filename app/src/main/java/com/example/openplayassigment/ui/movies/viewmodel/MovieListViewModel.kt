@@ -51,6 +51,7 @@ class MovieListViewModel @Inject constructor(
             }
         }
     }
+    //added search functionality
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
 
