@@ -58,27 +58,44 @@ class MovieListScreen : ComponentActivity() {
 @Composable
 fun MovieListScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val viewModel: MovieListViewModel = hiltViewModel()
-    val movies by viewModel.movies.collectAsState()
+    val movies by viewModel.filteredMovies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    if (isLoading) {
-        // Show loading indicator
-        Text(text = "Loading...", modifier = modifier)
-    } else if (error != null) {
-        // Show error message
-        Text(text = "Error: $error", modifier = modifier)
-    } else {
-        // Show the list of movies
-        LazyColumn(modifier = modifier) {
-            items(movies) { movie ->
-                MovieItem(movie = movie) {
-                    navController.navigate("movieDetail/${movie.id}")
+    Column {
+        SearchBar(
+            query = viewModel.searchQuery.collectAsState().value,
+            onQueryChange = { viewModel.onSearchQueryChanged(it) }
+        )
+        if (isLoading) {
+            // Show loading indicator
+            Text(text = "Loading...", modifier = modifier.padding(16.dp))
+        } else if (error != null) {
+            // Show error message
+            Text(text = "Error: $error", modifier = modifier.padding(16.dp))
+        } else {
+            // Show the list of movies
+            LazyColumn(modifier = modifier.padding(16.dp)) {
+                items(movies) { movie ->
+                    MovieItem(movie = movie) {
+                        navController.navigate("movieDetail/${movie.id}")
+                    }
                 }
             }
         }
     }
 }
+
+@Composable
+fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
+    androidx.compose.material3.TextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text("Search movies...") },
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
+    )
+}
+
 
 @Composable
 fun MovieItem(movie: MovieEntity, onClick: () -> Unit) {
@@ -108,6 +125,12 @@ fun MovieItem(movie: MovieEntity, onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Rating: ${movie.voteAverage} | Release Date: ${movie.releaseDate}",
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 14.sp
             )
         }
     }
