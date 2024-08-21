@@ -1,8 +1,9 @@
 package com.example.openplayassigment.data
 
-import com.example.openplayassigment.data.local.MovieEntity
+import com.example.openplayassigment.data.response.MovieItemResponse
+import com.example.openplayassigment.data.response.Search
 
 interface MovieRepository {
-    suspend fun fetchMovies(): List<MovieEntity>
-    suspend fun getMovieDetails(movieId: String): MovieEntity?
+    suspend fun fetchMovies(search: String): List<Search>
+    suspend fun getMovieDetails(movieId: String): MovieItemResponse
 }

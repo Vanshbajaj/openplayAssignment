@@ -3,6 +3,7 @@ package com.example.openplayassigment.ui.movies.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.openplayassigment.data.local.MovieEntity
+import com.example.openplayassigment.data.response.MovieItemResponse
 import com.example.openplayassigment.ui.movies.usecase.GetPopularMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +15,8 @@ import javax.inject.Inject
 class MovieDetailViewModel @Inject constructor(
     private val moviesUseCase: GetPopularMoviesUseCase
 ) : ViewModel() {
-    private val _movie = MutableStateFlow<MovieEntity?>(null)
-    val movie: StateFlow<MovieEntity?> = _movie
+    private val _movie = MutableStateFlow<MovieItemResponse?>(null)
+    val movie: StateFlow<MovieItemResponse?> = _movie
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading

@@ -30,7 +30,7 @@ object RetrofitClient {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
+            .baseUrl("https://www.omdbapi.com/")
             .client(okHttpClient)  // Use OkHttpClient with logging interceptor
             .addConverterFactory(GsonConverterFactory.create())
             .build()

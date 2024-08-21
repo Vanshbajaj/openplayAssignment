@@ -32,6 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.openplayassigment.data.local.MovieEntity
+import com.example.openplayassigment.data.response.MovieDataClass
+import com.example.openplayassigment.data.response.MovieItemResponse
 import com.example.openplayassigment.ui.movies.viewmodel.MovieDetailViewModel
 
 @Composable
@@ -74,51 +76,115 @@ fun MovieDetailScreen(movieId: String, navController: NavHostController) {
         }
     }
 }
-
-
 @Composable
-fun MovieDetailScreen1(movie: MovieEntity, modifier: Modifier, navController: NavHostController) {
+fun MovieDetailScreen1(movie: MovieItemResponse, modifier: Modifier = Modifier, navController: NavHostController) {
     Column(modifier = modifier.padding(16.dp)) {
-        val imageUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
+        // Movie Poster
         AsyncImage(
-            model = imageUrl,
+            model = movie.poster,
             contentDescription = movie.title,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Movie Title
         Text(
-            text = movie.title,
+            text = movie.title ?: "No Title",
             style = MaterialTheme.typography.headlineMedium,
             fontSize = 24.sp,
             color = Color.Black
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Release Date
         Text(
-            text = "Release Date: ${movie.releaseDate}",
+            text = "Release Date: ${movie.released ?: "N/A"}",
             style = MaterialTheme.typography.bodyLarge,
             fontSize = 18.sp,
             color = Color.Gray
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // IMDb Rating
         Text(
-            text = "Rating: ${movie.voteAverage}/10",
+            text = "IMDb Rating: ${movie.imdbRating ?: "N/A"}",
             style = MaterialTheme.typography.bodyLarge,
             fontSize = 18.sp,
             color = Color.Gray
         )
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Plot
         Text(
-            text = movie.overview,
+            text = "Plot: ${movie.plot ?: "No Plot Available"}",
             style = MaterialTheme.typography.bodyMedium,
             fontSize = 16.sp,
             maxLines = 5,
             overflow = TextOverflow.Ellipsis
         )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Genre
+        Text(
+            text = "Genre: ${movie.genre ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Director
+        Text(
+            text = "Director: ${movie.director ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Writer
+        Text(
+            text = "Writer(s): ${movie.writer ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Actors
+        Text(
+            text = "Actors: ${movie.actors ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Language
+        Text(
+            text = "Language: ${movie.language ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Country
+        Text(
+            text = "Country: ${movie.country ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Box Office
+        Text(
+            text = "Box Office: ${movie.boxOffice ?: "N/A"}",
+            style = MaterialTheme.typography.bodyMedium,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
+
 
 @Composable
 fun LoadingScreen() {

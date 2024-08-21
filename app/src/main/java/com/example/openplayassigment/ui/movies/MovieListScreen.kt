@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +35,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.openplayassigment.data.local.MovieEntity
+import com.example.openplayassigment.data.response.MovieDataClass
+import com.example.openplayassigment.data.response.Search
 import com.example.openplayassigment.ui.movies.viewmodel.MovieListViewModel
 import com.example.openplayassigment.ui.theme.OpenPlayAssigmentTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,27 +61,31 @@ class MovieListScreen : ComponentActivity() {
 @Composable
 fun MovieListScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val viewModel: MovieListViewModel = hiltViewModel()
-    val movies by viewModel.filteredMovies.collectAsState()
+    val movies by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    Column {
+    Column(modifier = modifier) {
         SearchBar(
             query = viewModel.searchQuery.collectAsState().value,
             onQueryChange = { viewModel.onSearchQueryChanged(it) }
         )
-        if (isLoading) {
-            // Show loading indicator
-            Text(text = "Loading...", modifier = modifier.padding(16.dp))
-        } else if (error != null) {
-            // Show error message
-            Text(text = "Error: $error", modifier = modifier.padding(16.dp))
-        } else {
-            // Show the list of movies
-            LazyColumn(modifier = modifier.padding(16.dp)) {
-                items(movies) { movie ->
-                    MovieItem(movie = movie) {
-                        navController.navigate("movieDetail/${movie.id}")
+        when {
+            isLoading -> {
+                Text(text = "Loading...", modifier = Modifier.padding(16.dp))
+            }
+            error != null -> {
+                Text(text = "Type Three Letter At least", modifier = Modifier.padding(16.dp))
+            }
+            movies.isEmpty() -> {
+                Text(text = "No movies found", modifier = Modifier.padding(16.dp))
+            }
+            else -> {
+                LazyColumn(modifier = Modifier.padding(16.dp)) {
+                    items(movies) { movie ->
+                        MovieItem(movie = movie) {
+                            navController.navigate("movieDetail/${movie.title}")
+                        }
                     }
                 }
             }
@@ -86,28 +93,28 @@ fun MovieListScreen(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
+
 @Composable
 fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
-    androidx.compose.material3.TextField(
+    TextField(
         value = query,
         onValueChange = onQueryChange,
         placeholder = { Text("Search movies...") },
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp)
     )
 }
 
-
 @Composable
-fun MovieItem(movie: MovieEntity, onClick: () -> Unit) {
+fun MovieItem(movie: Search, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(16.dp)
-            .clickable { onClick.invoke() } // Add clickable modifier
+            .clickable { onClick() }
     ) {
-        val imageUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
-
         AsyncImage(
-            model = imageUrl,
+            model = movie.poster,
             contentDescription = movie.title,
             modifier = Modifier.size(100.dp),
             contentScale = ContentScale.Crop
@@ -115,22 +122,16 @@ fun MovieItem(movie: MovieEntity, onClick: () -> Unit) {
         Spacer(modifier = Modifier.width(8.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = movie.title,
+                text = movie.title ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 20.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = movie.overview,
+                text = "Year: ${movie.year}",
                 style = MaterialTheme.typography.bodySmall,
-                maxLines = 3,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Rating: ${movie.voteAverage} | Release Date: ${movie.releaseDate}",
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 14.sp
             )
         }
     }
