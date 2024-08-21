@@ -3,6 +3,7 @@ package com.example.openplayassigment.ui.movies
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,12 +59,21 @@ fun MovieDetailScreen(movieId: String, navController: NavHostController) {
         } else {
             if (movie != null) {
                 Column(modifier = Modifier.padding(innerPadding)) {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                    Row {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+
+                        }
+                        Text(
+                            text = movieId, style = MaterialTheme.typography.headlineLarge,
+                            fontSize = 19.sp,
+                            color = Color.Black
                         )
                     }
+
                     MovieDetailScreen1(
                         movie!!,
                         modifier = Modifier,
@@ -86,17 +96,17 @@ fun MovieDetailScreen1(movie: MovieItemResponse, modifier: Modifier = Modifier, 
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         // Movie Title
-        Text(
-            text = movie.title ?: "No Title",
-            style = MaterialTheme.typography.headlineMedium,
-            fontSize = 24.sp,
-            color = Color.Black
-        )
+//        Text(
+//            text = movie.title ?: "No Title",
+//            style = MaterialTheme.typography.headlineMedium,
+//            fontSize = 24.sp,
+//            color = Color.Black
+//        )
         Spacer(modifier = Modifier.height(8.dp))
 
         // Release Date

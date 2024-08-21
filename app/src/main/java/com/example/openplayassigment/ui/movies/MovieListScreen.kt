@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -105,37 +108,53 @@ fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
             .padding(30.dp)
     )
 }
-
 @Composable
 fun MovieItem(movie: Search, onClick: () -> Unit) {
-    Row(
+    Card(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .clickable { onClick() }
+            .fillMaxWidth(), // Ensures the card takes the full width available
+        elevation = CardDefaults.cardElevation(), // Adds shadow to give a lifted appearance
+        shape = MaterialTheme.shapes.medium // Applies rounded corners
     ) {
-        AsyncImage(
-            model = movie.poster,
-            contentDescription = movie.title,
-            modifier = Modifier.size(100.dp),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = movie.title ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 20.sp
+        Row(
+            modifier = Modifier
+                .padding(12.dp) // Padding inside the card
+        ) {
+            AsyncImage(
+                model = movie.poster,
+                contentDescription = movie.title,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(MaterialTheme.shapes.medium), // Applies rounded corners to the image
+                contentScale = ContentScale.FillBounds // Crops the image to fill the size
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Year: ${movie.year}",
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = movie.title ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 20.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Year: ${movie.year}",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Type: ${movie.type}",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }
+
 
 
 @Composable
